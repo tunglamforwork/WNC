@@ -39,7 +39,7 @@ export class ActorsController {
       };
     } catch (error) {
       return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        status: error.status,
         message: error.message,
       };
     }
@@ -50,6 +50,7 @@ export class ActorsController {
   @ApiParam({ name: 'id', required: true, description: 'The ID of the actor' })
   @ApiResponse({ status: 200, description: 'Actor details returned' })
   @ApiResponse({ status: 404, description: 'Actor not found' })
+  @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
     try {
       const result = await this.actorService.findOne(+id);
@@ -59,7 +60,7 @@ export class ActorsController {
       };
     } catch (error) {
       return {
-        status: HttpStatus.NOT_FOUND,
+        status: error.status,
         message: error.message,
       };
     }
@@ -72,6 +73,7 @@ export class ActorsController {
     type: CreateActorDto,
   })
   @ApiResponse({ status: 201, description: 'Actor created successfully' })
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() actor: CreateActorDto) {
     try {
       const result = await this.actorService.create(actor);
@@ -81,7 +83,7 @@ export class ActorsController {
       };
     } catch (error) {
       return {
-        status: HttpStatus.BAD_REQUEST,
+        status: error.status,
         message: error.message,
       };
     }
@@ -92,6 +94,7 @@ export class ActorsController {
   @ApiParam({ name: 'id', required: true, description: 'Actor ID' })
   @ApiBody({ description: 'Updated actor data', type: UpdateActorDto })
   @ApiResponse({ status: 200, description: 'Actor updated successfully' })
+  @HttpCode(HttpStatus.OK)
   async update(@Param('id') id: string, @Body() actor: UpdateActorDto) {
     try {
       const result = await this.actorService.update(+id, actor);
@@ -101,7 +104,7 @@ export class ActorsController {
       };
     } catch (error) {
       return {
-        status: HttpStatus.BAD_REQUEST,
+        status: error.status,
         message: error.message,
       };
     }
@@ -111,6 +114,7 @@ export class ActorsController {
   @ApiOperation({ summary: 'Delete an actor by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Actor ID' })
   @ApiResponse({ status: 200, description: 'Actor deleted successfully' })
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     try {
       const result = await this.actorService.remove(+id);
@@ -120,7 +124,7 @@ export class ActorsController {
       };
     } catch (error) {
       return {
-        status: HttpStatus.NOT_FOUND,
+        status: error.status,
         message: error.message,
       };
     }
