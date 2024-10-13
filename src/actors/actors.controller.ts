@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -22,49 +24,105 @@ import { UpdateActorDto } from './dto/update-actor.dto';
 @Controller('actors')
 export class ActorsController {
   constructor(private readonly actorService: ActorsService) {}
+
   @Get()
   @ApiOperation({ summary: 'Get all actors' })
   @ApiResponse({ status: 200, description: 'All actors data returned' })
   @ApiResponse({ status: 404, description: 'No actors data found' })
-  findAll() {
-    return this.actorService.findAll();
+  @HttpCode(HttpStatus.OK)
+  async findAll() {
+    try {
+      const result = await this.actorService.findAll();
+      return {
+        message: 'Get all actors successfully',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message,
+      };
+    }
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get actor by id' })
+  @ApiOperation({ summary: 'Get actor by ID' })
   @ApiParam({ name: 'id', required: true, description: 'The ID of the actor' })
-  @ApiResponse({ status: 200, description: 'Actors detaisl returned' })
+  @ApiResponse({ status: 200, description: 'Actor details returned' })
   @ApiResponse({ status: 404, description: 'Actor not found' })
-  findOne(@Param('id') id: string) {
-    return this.actorService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const result = await this.actorService.findOne(+id);
+      return {
+        message: 'Get actor successfully',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        message: error.message,
+      };
+    }
   }
 
   @Post()
   @ApiOperation({ summary: 'Create a new actor' })
   @ApiBody({
-    description: 'Data requried to create a new actor',
+    description: 'Data required to create a new actor',
     type: CreateActorDto,
   })
   @ApiResponse({ status: 201, description: 'Actor created successfully' })
-  create(@Body() actor: CreateActorDto) {
-    return this.actorService.create(actor);
+  async create(@Body() actor: CreateActorDto) {
+    try {
+      const result = await this.actorService.create(actor);
+      return {
+        message: 'Actor created successfully',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        message: error.message,
+      };
+    }
   }
 
-  @Put(':id')
   @Put(':id')
   @ApiOperation({ summary: 'Update an actor by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Actor ID' })
   @ApiBody({ description: 'Updated actor data', type: UpdateActorDto })
-  @ApiResponse({ status: 200, description: 'ACtor updated successfully' })
-  update(@Param('id') id: string, @Body() actor: UpdateActorDto) {
-    return this.actorService.update(+id, actor);
+  @ApiResponse({ status: 200, description: 'Actor updated successfully' })
+  async update(@Param('id') id: string, @Body() actor: UpdateActorDto) {
+    try {
+      const result = await this.actorService.update(+id, actor);
+      return {
+        message: 'Actor updated successfully',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        message: error.message,
+      };
+    }
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an actor by ID' })
   @ApiParam({ name: 'id', required: true, description: 'Actor ID' })
   @ApiResponse({ status: 200, description: 'Actor deleted successfully' })
-  remove(@Param('id') id: string) {
-    return this.actorService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const result = await this.actorService.remove(+id);
+      return {
+        message: 'Actor deleted successfully',
+        data: result,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        message: error.message,
+      };
+    }
   }
 }

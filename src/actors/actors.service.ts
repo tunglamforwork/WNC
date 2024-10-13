@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Actor } from 'src/entities/actor.entity';
 import { Repository } from 'typeorm';
@@ -11,22 +11,46 @@ export class ActorsService {
     @InjectRepository(Actor)
     private readonly actorRepository: Repository<Actor>,
   ) {}
-  findAll() {
-    return this.actorRepository.find();
+
+  async findAll() {
+    return await this.actorRepository.find();
   }
 
-  findOne(id: number) {
-    return this.actorRepository.findOneBy({ actor_id: id });
-  }
-  create(actor: CreateActorDto) {
-    return this.actorRepository.save(actor);
+  async findOne(id: number) {
+    const actor = await this.actorRepository.findOneBy({ actor_id: id });
+    if (!actor) {
+      throw new NotFoundException({
+        status: 404,
+        message: `Actor with ID ${id} does not exist`,
+      });
+    }
+    return actor;
   }
 
-  async update(id: number, actor: UpdateActorDto) {
-    await this.actorRepository.update(id, actor);
+  async create(actor: CreateActorDto) {
+    return await this.actorRepository.save(actor);
+  }
+
+  async update(id: number, updateActorDto: UpdateActorDto) {
+    const existingActor = await this.findOne(id);
+    if (!existingActor) {
+      throw new NotFoundException({
+        status: 404,
+        message: `Actor with ID ${id} not found`,
+      });
+    }
+    await this.actorRepository.update(id, updateActorDto);
     return this.findOne(id);
   }
-  remove(id: number) {
+
+  async remove(id: number) {
+    const actor = await this.findOne(id);
+    if (!actor) {
+      throw new NotFoundException({
+        status: 404,
+        message: `Actor with ID ${id} not found`,
+      });
+    }
     return this.actorRepository.delete(id);
   }
 }
