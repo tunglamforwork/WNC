@@ -16,8 +16,8 @@ export class CreateFilmDto {
     description: 'Title of the film',
     example: 'The Terminator',
   })
-  @IsNotEmpty({ message: 'Title is required' })
   @IsString({ message: 'Title must be a string' })
+  @IsNotEmpty({ message: 'Title is required' })
   title: string;
 
   @ApiProperty({

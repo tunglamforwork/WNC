@@ -5,12 +5,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { FilmActorController } from './film_actor/film_actor.controller';
-import { FilmActorService } from './film_actor/film_actor.service';
 import { FilmModule } from './film/film.module';
 
 @Module({
   imports: [DatabaseModule, ActorsModule, FilmModule],
-  controllers: [AppController, ActorsController, FilmActorController],
-  providers: [AppService, FilmActorService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

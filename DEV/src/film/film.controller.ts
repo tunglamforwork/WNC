@@ -3,11 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   HttpCode,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { FilmService } from './film.service';
 import { CreateFilmDto } from './dto/create-film.dto';
@@ -49,8 +49,8 @@ export class FilmController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get film by id' })
-  @ApiResponse({ status: 200, description: 'Films data returned' })
+  @ApiOperation({ summary: 'Get all films' })
+  @ApiResponse({ status: 200, description: 'All films data returned' })
   @HttpCode(HttpStatus.OK)
   async findAll() {
     try {
@@ -88,7 +88,7 @@ export class FilmController {
     }
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Delete a film by id' })
   @ApiParam({ name: 'id', description: 'The film id' })
   @ApiBody({ description: 'Updated film data', type: UpdateFilmDto })
