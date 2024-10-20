@@ -1,13 +1,25 @@
-import { Column, Entity, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Actor } from './actor.entity';
+import { Film } from './film.entity';
 
 @Entity()
 export class FilmActor {
-  @Column()
-  actor_id: string;
+  @PrimaryColumn({ type: 'smallint', unsigned: true })
+  actor_id: number;
 
-  @Column()
-  film_id: string;
+  @PrimaryColumn({ type: 'smallint', unsigned: true })
+  film_id: number;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   last_update: Date;
+
+  @ManyToOne(() => Actor, (actor) => actor.filmActors)
+  actor: Actor;
+
+  @ManyToOne(() => Film, (film) => film.filmActors)
+  film: Film;
 }

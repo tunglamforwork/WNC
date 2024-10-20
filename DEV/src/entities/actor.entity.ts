@@ -1,21 +1,24 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { FilmActor } from './film_actor.entity';
 
 @Entity()
 export class Actor {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'smallint', unsigned: true })
   actor_id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 45 })
   first_name: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 45 })
   last_name: string;
 
-  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   last_update: Date;
+
+  @OneToMany(() => FilmActor, (filmActor) => filmActor.actor)
+  filmActors: FilmActor[];
 }

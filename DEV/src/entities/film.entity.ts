@@ -1,9 +1,14 @@
 import {
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { FilmActor } from './film_actor.entity';
+import { Language } from './language.entity';
 
 export enum Rating {
   G = 'G',
@@ -35,10 +40,10 @@ export class Film {
   release_year: string;
 
   @Column({ type: 'tinyint', unsigned: true })
-  language_id: string;
+  language_id: number;
 
-  @Column({ type: 'tinyint', unsigned: true })
-  original_language_id: string;
+  @Column({ type: 'tinyint', unsigned: true, nullable: true })
+  original_language_id: number;
 
   @Column({ type: 'tinyint', unsigned: true, default: 3 })
   rental_duration: number;
@@ -66,4 +71,19 @@ export class Film {
 
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   last_update: Date;
+
+  @ManyToOne(() => Language, (language) => language.films, {
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'language_id' })
+  language: Language;
+
+  @ManyToOne(() => Language, (language) => language.originalFilms, {
+    onUpdate: 'CASCADE',
+  })
+  @JoinColumn({ name: 'original_language_id' })
+  original_language: Language;
+
+  @OneToMany(() => FilmActor, (filmActor) => filmActor.film, { lazy: true })
+  filmActors: Promise<FilmActor[]>;
 }

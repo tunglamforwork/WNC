@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
-  IsOptional,
-  IsInt,
-  IsNumber,
-  IsString,
-  IsEnum,
   IsArray,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
   Min,
 } from 'class-validator';
 import { Features, Rating } from 'src/entities/film.entity';
@@ -22,38 +22,38 @@ export class CreateFilmDto {
 
   @ApiProperty({
     description: 'Description of the film',
-    example: 'Movie about robot destroy humanity',
+    example: 'Movie about robot destroying humanity',
   })
-  @IsNotEmpty({ message: 'Description is required' })
   @IsString({ message: 'Description must be a string' })
+  @IsNotEmpty({ message: 'Description is required' })
   description: string;
 
   @ApiProperty({
     description: 'Film Release Year',
     example: '2004',
   })
-  @IsNotEmpty({ message: 'Release year is required' })
   @IsString({ message: 'Release year must be a string' })
+  @IsNotEmpty({ message: 'Release year is required' })
   release_year: string;
 
   @ApiProperty({
-    description: 'Language ID in table Language',
+    description: 'Language ID from the Language table',
     example: '1',
   })
-  @IsNotEmpty({ message: 'Language ID is required' })
   @IsString({ message: 'Language ID must be a string' })
-  language_id: string;
+  @IsNotEmpty({ message: 'Language ID is required' })
+  language_id: number;
 
   @ApiProperty({
-    description: 'Original Language ID in table Language',
-    example: '1',
+    description: 'Original Language ID from the Language table (optional)',
+    example: '2',
   })
   @IsOptional()
-  @IsString({ message: 'Original Language ID must be a string' })
-  original_language_id: string;
+  @IsString({ message: 'Original Language ID must be a string if provided' })
+  original_language_id?: number;
 
   @ApiProperty({
-    description: 'Rental Duration',
+    description: 'Rental Duration in days',
     example: 3,
   })
   @IsOptional()
@@ -62,47 +62,49 @@ export class CreateFilmDto {
   rental_duration?: number;
 
   @ApiProperty({
-    description: 'Rental Rate',
+    description: 'Rental Rate in dollars',
     example: 4.99,
   })
   @IsOptional()
-  @IsNumber({}, { message: 'Rental rate must be a number' })
+  @IsNumber({}, { message: 'Rental rate must be a valid number' })
   @Min(0, { message: 'Rental rate cannot be negative' })
   rental_rate?: number;
 
   @ApiProperty({
-    description: 'The length of the film',
+    description: 'The length of the film in minutes',
     example: 120,
   })
-  @IsNotEmpty({ message: 'Length is required' })
   @IsInt({ message: 'Length must be an integer' })
   @Min(1, { message: 'Length must be at least 1 minute' })
+  @IsNotEmpty({ message: 'Length is required' })
   length: number;
 
   @ApiProperty({
-    description: 'Replacement Cost',
+    description: 'Replacement cost in dollars (optional)',
     example: 19.99,
   })
   @IsOptional()
-  @IsNumber({}, { message: 'Replacement cost must be a number' })
+  @IsNumber({}, { message: 'Replacement cost must be a valid number' })
   @Min(0, { message: 'Replacement cost cannot be negative' })
   replacement_cost?: number;
 
   @ApiProperty({
-    description: 'Film Rating',
+    description: 'Film rating (optional)',
     example: Rating.PG,
   })
   @IsOptional()
-  @IsNotEmpty({ message: 'Rating is required' })
   @IsEnum(Rating, { message: 'Invalid rating value' })
   rating?: Rating;
 
   @ApiProperty({
-    description: 'Film Special Features',
+    description: 'Special features of the film (optional)',
     example: [Features.COMMENTARIES],
   })
   @IsOptional()
   @IsArray({ message: 'Special features must be an array' })
-  @IsEnum(Features, { each: true, message: 'Invalid feature value' })
+  @IsEnum(Features, {
+    each: true,
+    message: 'Each feature must be a valid value',
+  })
   special_features?: Features[];
 }
