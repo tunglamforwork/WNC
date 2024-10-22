@@ -89,7 +89,7 @@ export class FilmController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Delete a film by id' })
+  @ApiOperation({ summary: 'Update a film by id' })
   @ApiParam({ name: 'id', description: 'The film id' })
   @ApiBody({ description: 'Updated film data', type: UpdateFilmDto })
   @ApiResponse({ status: 200, description: 'Film updated successfully' })
@@ -112,7 +112,10 @@ export class FilmController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a film by id' })
   @ApiParam({ name: 'id', description: 'The film id' })
-  @ApiResponse({ status: 200, description: 'Film deleted successfully' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Film deleted successfully',
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     try {
