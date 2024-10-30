@@ -6,6 +6,9 @@ import { DatabaseModule } from './database/database.module';
 import { FilmModule } from './film/film.module';
 import { LanguageModule } from './language/language.module';
 import { AppService } from './app.service';
+import { LogModule } from './log/log.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LogInterceptor } from './log/log.interceptor';
 
 @Module({
   imports: [
@@ -14,8 +17,15 @@ import { AppService } from './app.service';
     FilmModule,
     CategoryModule,
     LanguageModule,
+    LogModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LogInterceptor,
+    },
+  ],
 })
 export class AppModule {}

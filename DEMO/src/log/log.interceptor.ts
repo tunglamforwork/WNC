@@ -11,7 +11,6 @@ import { Request } from 'express';
 @Injectable()
 export class LogInterceptor implements NestInterceptor {
   constructor(private readonly logService: LogService) {}
-
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request: Request = context.switchToHttp().getRequest();
     const startTime = Date.now();
@@ -21,25 +20,25 @@ export class LogInterceptor implements NestInterceptor {
         this.logService.log({
           method: request.method,
           endpoint: request.url,
+          statusCode: context.switchToHttp().getResponse().statusCode,
           request: {
             body: JSON.stringify(request.body),
             query: request.query,
             params: request.params,
           },
           response,
-          statusCode: context.switchToHttp().getResponse().statusCode,
           duration: Date.now() - startTime,
         });
       }),
-      catchError((error) => {
+      catchError((err) => {
         this.logService.log({
           method: request.method,
           endpoint: request.url,
-          statusCode: error.status || 500,
+          statusCode: context.switchToHttp().getResponse().statusCode,
+          error: err,
           duration: Date.now() - startTime,
-          error: error.message,
         });
-        return throwError(() => error);
+        return throwError(() => err);
       }),
     );
   }

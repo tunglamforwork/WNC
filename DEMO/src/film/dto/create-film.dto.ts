@@ -104,7 +104,6 @@ export class CreateFilmDto {
   @IsArray({ message: 'Special features must be an array' })
   @IsEnum(Features, {
     each: true,
-    message: 'Each feature must be a valid value',
   })
   special_features?: Features[];
 }
