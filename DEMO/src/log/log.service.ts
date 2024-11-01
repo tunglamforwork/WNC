@@ -7,7 +7,8 @@ import * as DailyRotateFile from 'winston-daily-rotate-file';
 
 @Injectable()
 export class LogService {
-  private logger;
+  private logger: winston.Logger;
+
   constructor(
     @InjectRepository(Log)
     private readonly logRepository: Repository<Log>,
@@ -19,16 +20,18 @@ export class LogService {
       ),
       transports: [
         new winston.transports.Console(),
+
         new DailyRotateFile({
           filename: 'logs/app-%DATE%.log',
           datePattern: 'YYYY-MM-DD',
           maxSize: '20m',
-          maxFiles: '7d',
+          maxFiles: '14d',
         }),
+
         new DailyRotateFile({
           filename: 'logs/error-%DATE%.log',
           datePattern: 'YYYY-MM-DD',
-          maxSize: '20m',
+          maxSize: '20mb',
           maxFiles: '30d',
           level: 'error',
         }),
@@ -39,22 +42,23 @@ export class LogService {
   async log(data: {
     method: string;
     endpoint: string;
-    statusCode: number;
     request?: any;
     response?: any;
-    error?: string;
+    statusCode: number;
     duration: number;
+    error?: string;
   }) {
-    // Log winston
-    const logMethod = data.statusCode >= 400 ? 'error' : 'info';
-    const tmpData = {
+    const sanitizedData = {
       ...data,
       request: data.request ? JSON.stringify(data.request) : null,
       response: data.response ? JSON.stringify(data.response) : null,
     };
-    this.logger[logMethod](tmpData);
-    // Save to db
-    this.logRepository.save(tmpData);
+    await this.logRepository.save(sanitizedData);
+    const logMethod = data.statusCode >= 400 ? 'error' : 'info';
+    this.logger[logMethod]({
+      ...data,
+      timestamp: new Date().toISOString(),
+    });
   }
 
   async searchLogs(filters: {
