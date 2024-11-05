@@ -11,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: '111223',
       database: 'sakila-mysql',
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
     }),
   ],
 })

@@ -10,7 +10,7 @@ import { DatabaseModule } from './database/database.module';
 import { FilmModule } from './film/film.module';
 import { LogInterceptor } from './log/log.interceptor';
 import { LogModule } from './log/log.module';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { UsersModule } from './users/users.module';
     }),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_ACCESS_TOKEN_SECRET,
       signOptions: { expiresIn: '60s' },
     }),
     DatabaseModule,
@@ -28,7 +28,7 @@ import { UsersModule } from './users/users.module';
     ActorsModule,
     LogModule,
     FilmModule,
-    UsersModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
