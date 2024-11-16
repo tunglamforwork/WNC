@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package auth;
+
+service UsersService {
+    rpc CreateUser (CreateUserDto) returns (User) {}
+    rpc FindAllUsers (Empty) returns (Users) {}
+    rpc FindOneUser (UserId) returns (User) {}
+}
+
+message Empty {}
+
+message Users {
+    repeated User users = 1;
+}
+
+message User {
+    string id = 1;
+    string username = 2;
+    string password = 3;
+    int32 age = 4;
+}
+
+message CreateUserDto {
+    string username = 1;
+    string password = 2;
+    int32 age = 3;
+}
+
+message UserId {
+    string id = 1;
+}
