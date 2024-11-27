@@ -8,12 +8,10 @@ interface ITodo {
 
 interface TodoState {
   todos: ITodo[];
-  searchQuery: string;
 }
 
 const initialState: TodoState = {
   todos: [],
-  searchQuery: ""
 };
 
 const todoSlice = createSlice({
@@ -37,12 +35,9 @@ const todoSlice = createSlice({
         todo.done = !todo.done;
       }
     },
-    setSearchQuery: (state, action: PayloadAction<string>) => {
-      state.searchQuery = action.payload
-    }
   },
 });
 
 
-export const { addTodo, removeTodo, toggleTodo, setSearchQuery } = todoSlice.actions;
+export const { addTodo, removeTodo, toggleTodo } = todoSlice.actions;
 export default todoSlice.reducer;

@@ -10,7 +10,7 @@ export class UserService {
   ) {}
   async create(createUserDto: CreateUserDto) {
     const user = await firstValueFrom(
-      this.authClient.send({ cmd: 'createUser' }, createUserDto),
+      this.authClient.send('createUser', createUserDto),
     );
     return user;
   }
