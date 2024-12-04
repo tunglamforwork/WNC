@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../store/store';
 import {
 	deleteTaskById,
@@ -15,7 +16,7 @@ const TaskList = () => {
 		(state: RootState) => state.tasks
 	);
 	const isAuthenticated = localStorage.getItem('isAuthenticated');
-	// const navigate = useNavigate();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		dispatch(fetchTasks());
@@ -26,6 +27,7 @@ const TaskList = () => {
 			await dispatch(toggleTaskCompletion(id)).unwrap();
 		} catch (error) {
 			console.error('Failed to toggle task:', error);
+			// Optionally refetch tasks if the toggle fails
 			dispatch(fetchTasks());
 		}
 	};
@@ -57,7 +59,7 @@ const TaskList = () => {
 				<nav className='bg-white shadow-sm'>
 					<div className='max-w-7xl mx-auto px-4 py-2 flex justify-between items-center gap-4'>
 						<h1 className='text-xl font-semibold'>Todo App</h1>
-						{/* <button
+						<button
 							onClick={() => {
 								localStorage.removeItem('isAuthenticated');
 								navigate('/login');
@@ -65,7 +67,7 @@ const TaskList = () => {
 							className='text-red-500 hover:text-red-700'
 						>
 							Logout
-						</button> */}
+						</button>
 					</div>
 				</nav>
 			)}
